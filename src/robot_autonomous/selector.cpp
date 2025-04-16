@@ -4,8 +4,9 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 #include "robot_autonomous/autonsToUse.hpp"
-#include "pros/apix.h"
 #include "robot_autonomous/selector.hpp"
+#include "robot_autonomous/util.hpp"
+#include "pros/apix.h"
 
 Robot_Autonomous::AutonSelector::AutonSelector() {
   auton_count = 0;
@@ -24,7 +25,7 @@ void Robot_Autonomous::AutonSelector::selected_auton_print() {
   if (auton_count == 0) return;
   for (int i = 0; i < 8; i++)
     pros::lcd::clear_line(i);
-  ez::screen_print("Page " + std::to_string(auton_page_current + 1) + "\n" + Autons[auton_page_current].Name);
+  Robot_Autonomous::screen_print("Page " + std::to_string(auton_page_current + 1) + "\n" + Autons[auton_page_current].Name);
 }
 
 void Robot_Autonomous::AutonSelector::selected_auton_call() {

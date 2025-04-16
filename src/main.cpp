@@ -1,6 +1,7 @@
 #include "main.h"
 #include "globals.hpp"
 #include "lemlib/api.hpp" // IWYU pragma: keep
+#include <ostream>
 
 using namespace Robot;
 using namespace Robot::Globals;
@@ -51,6 +52,8 @@ void initialize() {
 	pros::delay(500);
 
 	pros::lcd::initialize();
+
+    std::cout << "Working to: " << std::endl;
 
 	autons_running.selection.autons_add({
 		Robot_Autonomous::AutonsToUse("Example Drive\n\nDrive forward and come back.", drive_example),

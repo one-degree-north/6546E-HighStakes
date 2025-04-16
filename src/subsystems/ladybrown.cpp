@@ -10,6 +10,8 @@
 using namespace Robot;
 using namespace Robot::Globals;
 
+LadyBrown::LADYBROWN_STATE LadyBrown::current_state = LadyBrown::BASE_STATE;
+
 LadyBrown::LadyBrown() : moveToPointPID(2, 0, 0, 2, false){
     ladyBrownRotational.set_position(0);
     LadyBrownMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
