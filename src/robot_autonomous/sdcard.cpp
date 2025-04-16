@@ -3,15 +3,17 @@ This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-
+#include "globals.hpp"
 #include "robot_autonomous/sdcard.hpp"
+#include "robot_autonomous/selector.hpp"
+#include "robot_autonomous/util.hpp"
 
 #include <filesystem>
-
-#include "robot_autonomous/selector.hpp"
 #include "liblvgl/llemu.hpp"
 #include "pros/llemu.hpp"
-#include "robot_autonomous/util.hpp"
+
+using namespace Robot;
+using namespace Robot::Globals;
 
 namespace Robot_Autonomous::sd {
 Robot_Autonomous::AutonSelector auton_selector{};
@@ -172,4 +174,23 @@ void limitSwitchTask() {
     pros::delay(50);
   }
 }
+
+void potentiometerAutonSet(){
+  // divided by 50 because V.1 Potentiomete goes to 250 degrees. For value [get_angle() / X], X = 250 / Amount
+  int team_category = static_cast<int>(std::ceil(teamPosition.get_angle() / 62));
+  int auton_category = static_cast<int>(std::ceil(autonPosition.get_angle() / 62));
+
+  if (team_category > 5){
+    team_category = 0;
+  }
+
+  if (auton_category > 5){
+    team_category = 0;
+  }
+
+  auton_selector.auton_page_current = (team_category - 1) * 4 + auton_category;
+  print_page();
+}
+
+
 }  // namespace Robot_Autonomous::sd

@@ -22,10 +22,6 @@ struct RobotSubsystems {
 	Robot::GoalStealer goalStealer;
 } subsystem;
 
-struct RobotAutons {
-	Robot_Autonomous::AutonSelector selection;
-} autons_running;
-
 /**
  * A callback function for LLEMU's center button.
  *
@@ -53,17 +49,36 @@ void initialize() {
 
 	pros::lcd::initialize();
 
-    std::cout << "Working to: " << std::endl;
-
-	autons_running.selection.autons_add({
-		Robot_Autonomous::AutonsToUse("Example Drive\n\nDrive forward and come back.", drive_example),
-		Robot_Autonomous::AutonsToUse("Example Turn\n\nTurn 3 times.", turn_example),
+	// Auton Selector
+	Robot_Autonomous::sd::auton_selector.autons_add({
+		{"Drive\n\nDrive forward and come back", drive_example},
+		{"Red 1\n\nProgram 1", drive_example},
+		{"Red 1\n\nProgram 2", drive_example},
+		{"Red 1\n\nProgram 3", drive_example},
+		{"Red 1\n\nProgram 4", drive_example},
+		{"Red 2\n\nProgram 1", drive_example},
+		{"Red 2\n\nProgram 2", drive_example},
+		{"Red 2\n\nProgram 3", drive_example},
+		{"Red 2\n\nProgram 4", drive_example},
+		{"Blue 1\n\nProgram 1", drive_example},
+		{"Blue 1\n\nProgram 2", drive_example},
+		{"Blue 1\n\nProgram 3", drive_example},
+		{"Blue 1\n\nProgram 4", drive_example},
+		{"Blue 2\n\nProgram 1", drive_example},
+		{"Blue 2\n\nProgram 2", drive_example},
+		{"Blue 2\n\nProgram 3", drive_example},
+		{"Blue 2\n\nProgram 4", drive_example},
 	});
 
 	// initalizing chassis and auton selector
 	chassis.calibrate(true);
 	chassis.setPose(0, 0, 0);
 	Robot_Autonomous::sd::initialize();
+
+	std::cout << "Team Position: " << teamPosition.get_angle() << std::endl;
+	std::cout << "Auton Position: " << autonPosition.get_angle() << std::endl;
+
+	Robot_Autonomous::sd::potentiometerAutonSet();
 
 	master.rumble(".");
 }
@@ -101,7 +116,7 @@ void autonomous() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 	chassis.setPose(0, 0, 0, false);
 	
-	autons_running.selection.selected_auton_call();
+	Robot_Autonomous::sd::auton_selector.selected_auton_call();
 }
 
 /**
@@ -122,6 +137,8 @@ void opcontrol() {
 	chassis.setBrakeMode(driver_preference_brake);
 
 	while (true) {
+
+		Robot_Autonomous::sd::potentiometerAutonSet();
 
 		// Calls to event handling functions.
 		// Bound to Up

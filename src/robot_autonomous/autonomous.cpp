@@ -4,7 +4,6 @@
 using namespace Robot;
 using namespace Robot::Globals;
 
-constexpr int delay_constant = 1050;
 
 void drive_example(){
 

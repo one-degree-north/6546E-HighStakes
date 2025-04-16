@@ -95,6 +95,9 @@ void page_blank_remove_all();
  */
 int page_blank_amount();
 
+void potentiometerAutonSet();
+
+
 /**
  * Current amount of blank pages.
  */
