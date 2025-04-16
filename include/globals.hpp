@@ -47,6 +47,7 @@ namespace Robot {
 // 1 IMU
 // 1 optical for color sort
 // 1 distance for clamp
+// 2 potentiometers for auton selector
 
 
  namespace Globals {
@@ -67,11 +68,9 @@ namespace Robot {
     extern lemlib::Drivetrain drivetrain;
     extern pros::MotorGroup drive_;
 
-
     // Other motor systems
     extern pros::Motor IntakeHookMotor;
-    extern pros::Motor LadyBrownMotorMotor;
-
+    extern pros::Motor LadyBrownMotor;
 
     // pneumatic Systems
     extern pros::adi::Pneumatics clampControl;
@@ -81,15 +80,15 @@ namespace Robot {
     extern pros::IMU inertial_sensor;
     extern pros::Rotation ladyBrownRotational;
     extern pros::Distance clamp_sensor;
+    extern pros::adi::Potentiometer teamPosition;
+    extern pros::adi::Potentiometer autonPosition;
 
     // color-related sorting
     extern pros::Optical colorSensor;
     
-
     // PID
     extern lemlib::ControllerSettings lateral_controller; // forward/back
     extern lemlib::ControllerSettings angular_controller; // turning
-
 
     // Odom
     extern lemlib::OdomSensors odomRotational;

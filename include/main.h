@@ -35,17 +35,28 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
+
 #include "globals.hpp"
+
 #include "robot/drivetrain.hpp"
 #include "robot/intakehook.hpp"
+#include "robot/ladybrown.hpp"
 #include "robot/clamp.hpp"
 #include "robot/goalstealer.hpp"
+
+#include "robot_autonomous/autonomous.hpp"
+#include "robot_autonomous/autonsToUse.hpp"
+#include "robot_autonomous/selector.hpp"
+#include "robot_autonomous/sdcard.hpp"
+#include "robot_autonomous/util.hpp"
+
 #include "lemlib/api.hpp"
+// #include "okapi/api.hpp"
 
 /**
  * You should add more #includes here
  */
-// #include "okapi/api.hpp"
+
 
 
 /**

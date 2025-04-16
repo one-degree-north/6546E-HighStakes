@@ -16,13 +16,14 @@ using namespace Robot::Globals;
 struct RobotSubsystems {
 	Robot::Drivetrain drivetrain;
 	Robot::IntakeHook intakeHook;
+	Robot::LadyBrown ladybrown;
 	Robot::Clamp clamp;
 	Robot::GoalStealer goalStealer;
 } subsystem;
 
-
-
-
+struct RobotAutons {
+	Robot_Autonomous::AutonSelector selection;
+} autons_running;
 
 /**
  * A callback function for LLEMU's center button.
@@ -47,10 +48,21 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	pros::delay(500);
 
-	pros::lcd::register_btn1_cb(on_center_button);
+	pros::lcd::initialize();
+
+	autons_running.selection.autons_add({
+		Robot_Autonomous::AutonsToUse("Example Drive\n\nDrive forward and come back.", drive_example),
+		Robot_Autonomous::AutonsToUse("Example Turn\n\nTurn 3 times.", turn_example),
+	});
+
+	// initalizing chassis and auton selector
+	chassis.calibrate(true);
+	chassis.setPose(0, 0, 0);
+	Robot_Autonomous::sd::initialize();
+
+	master.rumble(".");
 }
 
 /**
@@ -82,7 +94,12 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+	chassis.setPose(0, 0, 0, false);
+	
+	autons_running.selection.selected_auton_call();
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -98,20 +115,33 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	pros::MotorGroup left_mg({1, -2, 3});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({-4, 5, -6});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
-
+	pros::motor_brake_mode_e_t driver_preference_brake = MOTOR_BRAKE_COAST;
+	chassis.setBrakeMode(driver_preference_brake);
 
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
-		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left_mg.move(dir - turn);                      // Sets left motor voltage
-		right_mg.move(dir + turn);                     // Sets right motor voltage
-		pros::delay(20);                               // Run for 20 ms then update
+		// Calls to event handling functions.
+		// Bound to Up
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+			autonomous();
+		}
+
+		// Bound to X
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
+			pros::Task move([&]() { subsystem.ladybrown.moveToPoint(LadyBrown::OFFENSE_STATE); }, "LadyBrownMove");
+		}
+
+		subsystem.drivetrain.run();
+
+		// Bound to A to run
+		subsystem.clamp.run();
+		subsystem.ladybrown.run();
+		subsystem.goalStealer.run();
+
+		// Bound to L1, R1 to run
+		subsystem.intakeHook.run();
+
+		pros::delay(10); // Small delay to reduce CPU usage
+
 	}
 }

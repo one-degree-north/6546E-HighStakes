@@ -1,5 +1,6 @@
 #include "globals.hpp"
 #include "pros/abstract_motor.hpp"
+#include "pros/adi.h"
 #include "pros/adi.hpp"
 #include "pros/distance.hpp"
 #include "pros/imu.hpp"
@@ -29,7 +30,7 @@ namespace Robot{
 
     // other motors
     pros::Motor IntakeHookMotor(1, pros::v5::MotorGear::blue, pros::v5::MotorUnits::degrees);
-    pros::Motor LadyBrownMotorMotor(1, pros::v5::MotorGear::red, pros::v5::MotorUnits::degrees);
+    pros::Motor LadyBrownMotor(1, pros::v5::MotorGear::red, pros::v5::MotorUnits::degrees);
     
     // pneumatics
     pros::adi::Pneumatics clampControl('A', false);
@@ -42,6 +43,11 @@ namespace Robot{
 
     pros::Rotation lateral_sensor(1);
     pros::Rotation horizontal_sensor(1);
+
+    pros::adi::Potentiometer teamPosition('G', pros::E_ADI_POT_EDR);
+    pros::adi::Potentiometer autonPosition('H', pros::E_ADI_POT_EDR);
+
+
 
     // optical/color sort related
     pros::Optical colorSensor(1);

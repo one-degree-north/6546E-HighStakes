@@ -7,7 +7,7 @@
 using namespace Robot;
 using namespace Robot::Globals;
 
-Drivetrain::DRIVE_MODE Drivetrain::driveMode = TANK_DRIVE;
+Drivetrain::DRIVE_MODE Drivetrain::driveMode = CURVATURE_DRIVE;
 
 bool Drivetrain::isReversed = false;
 
