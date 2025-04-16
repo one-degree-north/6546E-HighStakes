@@ -9,6 +9,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "robot_autonomous/util.hpp"
 
 #include <filesystem>
+#include <string>
 #include "liblvgl/llemu.hpp"
 #include "pros/llemu.hpp"
 
@@ -180,16 +181,16 @@ void potentiometerAutonSet(){
   int team_category = static_cast<int>(std::ceil(teamPosition.get_angle() / 62));
   int auton_category = static_cast<int>(std::ceil(autonPosition.get_angle() / 62));
 
-  if (team_category > 5){
+  if (teamPosition.get_angle() > 20000){
     team_category = 0;
   }
 
-  if (auton_category > 5){
-    team_category = 0;
+  if (autonPosition.get_angle() > 5){
+    auton_category = 0;
   }
 
   auton_selector.auton_page_current = (team_category - 1) * 4 + auton_category;
-  print_page();
+  Robot_Autonomous::sd::auto_sd_update();
 }
 
 
